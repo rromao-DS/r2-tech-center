@@ -44,3 +44,13 @@ O CI no GitHub Actions roda lint, tipos, formatação, testes e build em todo pu
 ## Banco de dados
 
 O schema fica em `src/db/schema.ts`. Depois de mudar o schema, rode `pnpm db:generate` e faça commit da migration gerada. Os testes aplicam as migrations num Postgres em memória (PGlite), então não precisam de Docker.
+
+## Login com GitHub
+
+O login usa Auth.js com sessões guardadas no Postgres.
+
+1. Crie um OAuth App em https://github.com/settings/developers com a callback `http://localhost:3000/api/auth/callback/github`.
+2. Preencha `AUTH_GITHUB_ID` e `AUTH_GITHUB_SECRET` no `.env.local`.
+3. Gere o `AUTH_SECRET` com `npx auth secret`.
+
+Depois de entrar, `/painel` lista os repositórios do usuário. Com o escopo padrão do OAuth App aparecem só os públicos; o acesso aos privados virá pela GitHub App.
