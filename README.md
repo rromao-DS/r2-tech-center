@@ -54,3 +54,9 @@ O login usa Auth.js com sessões guardadas no Postgres.
 3. Gere o `AUTH_SECRET` com `npx auth secret`.
 
 Depois de entrar, `/painel` lista os repositórios do usuário. Com o escopo padrão do OAuth App aparecem só os públicos; o acesso aos privados virá pela GitHub App.
+
+## Tarefas do agente
+
+`POST /api/tasks` recebe `{ "repositoryId": "...", "prompt": "..." }`, confere se o usuário é membro da organização dona do repositório e grava a tarefa com status `queued`. `GET /api/tasks?repositoryId=...` lista as últimas 50.
+
+A execução fica atrás da interface `AgentRunner` em `src/agent/runner.ts`. Por enquanto o `queueOnlyRunner` só registra a tarefa; quando o fornecedor de sandbox for escolhido, a implementação real entra ali sem mexer na rota.

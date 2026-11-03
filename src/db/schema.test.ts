@@ -1,14 +1,12 @@
-import { PGlite } from "@electric-sql/pglite";
 import { eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/pglite";
-import { migrate } from "drizzle-orm/pglite/migrator";
 import { beforeAll, describe, expect, it } from "vitest";
+import { createTestDb } from "@/test/db";
 import * as schema from "./schema";
 
-const db = drizzle(new PGlite(), { schema });
+let db: Awaited<ReturnType<typeof createTestDb>>;
 
 beforeAll(async () => {
-  await migrate(db, { migrationsFolder: "./drizzle" });
+  db = await createTestDb();
 });
 
 describe("schema do banco", () => {

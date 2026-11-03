@@ -102,3 +102,32 @@ export const repositories = pgTable(
   },
   (t) => [uniqueIndex("repositories_org_github_repo_idx").on(t.organizationId, t.githubRepoId)],
 );
+
+export const taskStatus = pgEnum("task_status", [
+  "queued",
+  "running",
+  "succeeded",
+  "failed",
+  "cancelled",
+]);
+
+export const tasks = pgTable("tasks", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  organizationId: uuid("organization_id")
+    .notNull()
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  repositoryId: uuid("repository_id")
+    .notNull()
+    .references(() => repositories.id, { onDelete: "cascade" }),
+  createdById: text("created_by_id")
+    .notNull()
+    .references(() => users.id),
+  prompt: text("prompt").notNull(),
+  status: taskStatus("status").notNull().default("queued"),
+  branch: text("branch"),
+  pullRequestUrl: text("pull_request_url"),
+  error: text("error"),
+  createdAt: createdAt(),
+  startedAt: timestamp("started_at", { withTimezone: true }),
+  finishedAt: timestamp("finished_at", { withTimezone: true }),
+});
