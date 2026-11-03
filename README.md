@@ -6,12 +6,15 @@ Agente de código com IA para equipes brasileiras: recebe uma tarefa, trabalha n
 
 - Node.js 22 ou mais recente
 - pnpm 10 (`corepack enable` instala a versão certa)
+- Docker, para o Postgres local
 
 ## Começando
 
 ```bash
 pnpm install
 cp .env.example .env.local
+pnpm db:up       # sobe o Postgres
+pnpm db:migrate  # aplica as migrations
 pnpm dev
 ```
 
@@ -34,4 +37,10 @@ O CI no GitHub Actions roda lint, tipos, formatação, testes e build em todo pu
 
 - `src/app`: rotas do Next.js (App Router)
 - `src/lib`: código compartilhado
+- `src/db`: schema do Drizzle e conexão com o Postgres
+- `drizzle/`: migrations geradas (não edite à mão)
 - `site/`: páginas estáticas públicas (política de privacidade, exclusão de dados)
+
+## Banco de dados
+
+O schema fica em `src/db/schema.ts`. Depois de mudar o schema, rode `pnpm db:generate` e faça commit da migration gerada. Os testes aplicam as migrations num Postgres em memória (PGlite), então não precisam de Docker.
